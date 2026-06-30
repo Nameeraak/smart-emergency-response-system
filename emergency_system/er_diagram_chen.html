@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ER Diagram (Chen's Notation)</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js"></script>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f9f9f9;
+        }
+
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .download-btn {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+
+        .download-btn:hover {
+            background-color: #0056b3;
+        }
+
+        #diagram-container {
+            display: inline-block;
+            background: white;
+            /* Important for clean download */
+            padding: 20px;
+        }
+
+        /* Optional: Style adjustments to make it look more like the reference image */
+        .node rect,
+        .node circle,
+        .node ellipse,
+        .node polygon {
+            stroke: #006600 !important;
+            fill: #ffffff !important;
+            stroke-width: 1.5px !important;
+        }
+
+        .node .label {
+            color: #006600 !important;
+        }
+
+        .edgePath .path {
+            stroke: #333333 !important;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h2>Smart Emergency Response System - ER Diagram</h2>
+        <button class="download-btn" onclick="downloadImage()">Download as Image (PNG)</button>
+
+        <div id="diagram-container">
+            <div class="mermaid">
+                flowchart TD
+                %% Settings
+
+                %% Entities (Rectangles)
+                U[USERS]
+                REQ[EMERGENCY_REQUESTS]
+                ADMIN[ADMIN]
+                POLICE[POLICE]
+                AMB[AMBULANCE]
+                HOSP[HOSPITAL]
+                TOK[PASSWORD_RESET_TOKENS]
+
+                %% Relationships (Diamonds)
+                R_MAKES{Makes}
+                R_REQUESTS{Requests}
+                R_HANDLES_P{Handles}
+                R_HANDLES_A{Handles}
+                R_HANDLES_H{Handles}
+
+                %% User Attributes (Stadiums/Ovals)
+                U_id([id PK])
+                U_name([name])
+                U_email([email])
+                U_phone([phone])
+                U_pass([password])
+                U_add([address])
+                U_bg([blood_group])
+
+                U --- U_id
+                U --- U_name
+                U --- U_email
+                U --- U_phone
+                U --- U_pass
+                U --- U_add
+                U --- U_bg
+
+                %% Emergency Requests Attributes
+                REQ_id([id PK])
+                REQ_type([service_type])
+                REQ_loc([location_text])
+                REQ_sev([severity])
+                REQ_stat([status])
+
+                REQ --- REQ_id
+                REQ --- REQ_type
+                REQ --- REQ_loc
+                REQ --- REQ_sev
+                REQ --- REQ_stat
+
+                %% Responder Attributes (Police as example)
+                P_id([id PK])
+                P_name([name])
+                P_badge([badge_number])
+
+                POLICE --- P_id
+                POLICE --- P_name
+                POLICE --- P_badge
+
+                %% Relationships Links
+                U --- R_MAKES --- REQ
+                U --- R_REQUESTS --- TOK
+
+                REQ --- R_HANDLES_P --- POLICE
+                REQ --- R_HANDLES_A --- AMB
+                REQ --- R_HANDLES_H --- HOSP
+
+                %% Styling to mimic the provided image's green style
+                classDef default fill:#fff,stroke:#006600,stroke-width:1.5px,color:#006600;
+                classDef entity fill:#fff,stroke:#006600,stroke-width:2px,font-weight:bold;
+
+                class U,REQ,ADMIN,POLICE,AMB,HOSP,TOK entity;
+            </div>
+        </div>
+    </div>
+
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'base',
+            themeVariables: {
+                lineColor: '#333'
+            }
+        });
+
+        function downloadImage() {
+            const container = document.getElementById('diagram-container');
+
+            // Wait a little bit for mermaid to finish rendering before taking screenshot
+            setTimeout(() => {
+                html2canvas(container, {
+                    scale: 2, // Higher quality
+                    backgroundColor: "#ffffff"
+                }).then(canvas => {
+                    const link = document.createElement('a');
+                    link.download = 'SERAAS_ER_Diagram.png';
+                    link.href = canvas.toDataURL('image/png');
+                    link.click();
+                });
+            }, 500);
+        }
+    </script>
+</body>
+
+</html>
